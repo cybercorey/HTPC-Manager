@@ -64,8 +64,12 @@ class Sonarr(object):
             sonarr_basepath = fix_basepath(sonarr_basepath)
 
             headers = {'X-Api-Key': htpc.settings.get('sonarr_apikey', '')}
+            
+            if not htpc.settings.get('sonarr_apikey', ''):
+                self.logger.error('Please enter the apikey in the settings page')
 
             url = 'http%s://%s:%s%sapi/%s' % (ssl, host, port, sonarr_basepath, path)
+            self.logger.debug('Trying to contact sonarr via %s' % url)
 
             if banner:
                 #  the path includes the basepath automaticly (if fetched from api command 'Series')
@@ -90,6 +94,7 @@ class Sonarr(object):
 
         except Exception as e:
             self.logger.error('Failed to fetch url=%s path=%s error %s' % (url, path, e))
+            return []
 
     @cherrypy.expose()
     @require(member_of(htpc.role_admin))
@@ -113,7 +118,7 @@ class Sonarr(object):
     @require()
     @cherrypy.tools.json_out()
     def Rootfolder(self):
-        return [folder['path'] for folder in self.fetch('Rootfolder')]
+        return [folder['path'] for folder in self.fetch('Rootfolder') if folder.get('path')]
 
     @cherrypy.expose()
     @require()
