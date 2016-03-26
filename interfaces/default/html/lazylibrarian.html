@@ -1,0 +1,98 @@
+<%inherit file="base.html"/>
+<% settings = self.attr.settings %>
+<div class="container-fluid">
+    <div class="content maincontent">
+        <h1 class="page-header page-title">
+            <a href="${url}" ${'class="useiframe"' if settings.get('app_open_otherlink_in_iframe') else 'target="_blank"'} title="Open original Lazylibrarian interface">${name}</a>
+            <div class="btn-group show-options-menu pull-right">
+                <a class="btn dropdown-toggle" data-hover="dropdown" data-toggle="dropdown" href="#">
+                    <i class="fa fa-wrench fa-lg"></i>
+                    <i class="fa fa-chevron-down"></i>
+                </a>
+                <ul class="dropdown-menu">
+                    <!--  finished the commands below-->
+                    <li><a href="ForceSearch" title="Force Search Lazylibrarian" class="ajax-confirm "><i class="fa fa-search fa-fw"></i> Force Search</a></li>
+                    <li><a href="ForceProcess" title="Force Process Lazylibrarian" class="lazylibrarians_forceprocess"><i class="fa fa-hdd-o fa-fw"></i> Force Process</a></li>
+                    <li class="divider"></li>
+                    <li><a href="ReStart" title="Restart Lazylibrarian" class="ajax-confirm lazylibrarians_restart"><i class="fa fa-refresh fa-fw"></i> Restart</a></li>
+                    <li><a href="ShutDown" title="Shutdown Lazylibrarian" class="ajax-confirm lazylibrarians_shutdown"><i class="fa fa-power-off fa-fw"></i> Shutdown</a></li>
+                </ul>
+            </div>
+        </h1>
+        <div class="well form-inline">
+            <input class="span4" id="add_author_name" name="add_author_name" type="text"/>
+            <select class="span4" style="display:none;" id="add_author_select" name="add_author_select"></select>
+            <select class="span2" style="" id="add_author_book" name="add_author_book_select">
+                <option name="book" value="bookId" data-id="bookId">Book</option>
+                <option name="author" value="authorId" data-id="authorId">Author</option>
+
+            </select>
+            <button class="btn btn-success" type="button" id="add_author_button"><i class="fa fa-search fa-inverse fa-fw"></i> Search</button>
+            <button class="btn btn-success hide" type="button" id="add_authorid_button"><i class="fa fa-check fa-inverse fa-fw"></i> Add</button>
+            <button class="btn hide" type="button" id="cancel_author_button"> Cancel</button>
+        </div>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#authors" data-toggle="tab">Authors</a></li>
+            <li><a href="#books" data-toggle="tab">Books</a></li>
+            <li><a href="#wanted" data-toggle="tab">Wanted</a></li>
+            <li><a href="#history" data-toggle="tab">History</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="authors" class="tab-pane active">
+                <table class="table table-striped table-sortable">
+                    <thead>
+                        <tr>
+                            <th>&nbsp;</th>
+                            <th>Author</th>
+                            <th>Last book</th>
+                            <th>Release date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="authors_table_body"></tbody>
+                </table>
+            </div>
+            <div id="books" class="tab-pane">
+                <table class="table table-striped table-sortable">
+                    <thead>
+                        <tr>
+                            <th>Author</th>
+                            <th>Book</th>
+                            <th>Release Date</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="books_table_body"></tbody>
+                </table>
+            </div>
+            <div id="wanted" class="tab-pane">
+                <table class="table table-striped table-sortable">
+                    <thead>
+                        <tr>
+                            <th>Author</th>
+                            <th>Book</th>
+                            <th>Release Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="wanted_table_body"></tbody>
+                </table>
+            </div>
+            <div id="history" class="tab-pane">
+                <table class="table table-striped table-sortable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Title</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history_table_body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

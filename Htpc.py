@@ -105,6 +105,8 @@ def load_modules():
     htpc.ROOT.vnstat = Vnstat()
     from modules.headphones import Headphones
     htpc.ROOT.headphones = Headphones()
+    from modules.lazylibrarian import Lazylibrarian
+    htpc.ROOT.lazylibrarian = Lazylibrarian()
     from modules.mylar import Mylar
     htpc.ROOT.mylar = Mylar()
 
