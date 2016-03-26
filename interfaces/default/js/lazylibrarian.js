@@ -1,6 +1,7 @@
 $(document).ready(function () {
     $(window).trigger('hashchange');
     loadAuthors();
+    loadBooks();
     loadWanteds();
     loadHistory();
 
@@ -205,6 +206,67 @@ function loadAuthors() {
                 });
                 $('#authors_table_body').parent().trigger('update');
                 $('#authors_table_body').parent().trigger("sorton",[[[0,0]]]);
+            }
+        }
+    });
+}
+
+function loadBooks() {
+    $.ajax({
+        url: WEBDIR + 'lazylibrarian/GetBookList',
+        type: 'get',
+        dataType: 'json',
+        success: function (result) {
+            if (result.length == 0) {
+                var row = $('<tr>')
+                row.append($('<td>').attr('colspan', '5').html('No books found'));
+                $('#books_table_body').append(row);
+            } else {
+                $.each(result, function (index, book) {
+                    var image = $('<img>').addClass('img-polaroid img-rounded bookimgtab')
+                    var name = $('<a>')
+                        .attr('href', book.BookLink)
+                        .attr('target',"_blank")
+                        .text(book.BookName);
+                    var authorname = $('<a>')
+                        .attr('href',WEBDIR + 'lazylibrarian/viewAuthor/' + book.AuthorID)
+                        .text(book.AuthorName);
+                    var row = $('<tr>')
+
+                    var isError = book.BookName.indexOf('Fetch failed') != -1;
+                    if (isError) {
+                        book.Status = 'Error';
+                    }
+
+                    var $statusRow = $('<td>')
+                        .html(lazylibrarianStatusLabel(book.Status));
+
+                    if (isError) {
+                        $statusRow.click(function () {
+                            beginRefreshBook(book.BookID);
+                        });
+                    }
+
+                    if (book.BookImg) {
+                        image.attr('src', WEBDIR + 'lazylibrarian/GetThumb?thumb=' + book.BookImg)
+
+                    } else {
+                        image.attr('src', '../img/no-cover-book.png').css({'width' : '64px' , 'height' : '64px'}) //TODO
+
+                    }
+
+                    var div = $('<div>').addClass("bookthumbdiv").append(image)
+                    row.append(
+                        $('<td>').append(div),
+                        $('<td>').html(name),
+                        $('<td>').html(authorname),
+                        $('<td>').append(book.BookDate),
+                        $statusRow
+                    );
+                    $('#books_table_body').append(row);
+                });
+                $('#books_table_body').parent().trigger('update');
+                $('#books_table_body').parent().trigger("sorton",[[[0,0]]]);
             }
         }
     });

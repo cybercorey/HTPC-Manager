@@ -66,53 +66,27 @@ class Lazylibrarian(object):
             url = thumb
         return get_image(url, h, w, o)
 
-    #@cherrypy.expose()
-    #@require()
-    #def viewAuthor(self, author_id):
-    #    response = self.fetch('getAuthor&id=%s' % author_id)
-
-    #    for a in response['books']:
-    #        a['StatusText'] = _get_status_icon(a['Status'])
-    #        a['can_download'] = True if a['Status'] not in ('Downloaded', 'Snatched', 'Wanted') else False
-    #        a['can_skip'] = True if a['Status'] not in ('Downloaded', 'Snatched', 'Skipped') else False
-    #        a['can_trynew'] = True if a['Status'] in ('Snatched') else False
-
-    #    template = htpc.LOOKUP.get_template('lazylibrarian_view_author.html')
-
-    #    return template.render(
-    #        scriptname='lazylibrarian_view_author',
-    #        author_id=author_id,
-    #        author=response['author'][0],
-    #        authorimg=response['author'][0]['ArtworkURL'],
-    #        books=response['books'],
-    #        description=response['description'][0],
-    #        module_name=htpc.settings.get('lazylibrarian_name') or 'Lazylibrarian',
-    #    )
-
     @cherrypy.expose()
     @require()
-    def viewBook(self, book_id):
-        response = self.fetch('getBook&id=%s' % book_id)
+    def viewAuthor(self, author_id):
+        response = self.fetch('getAuthor&id=%s' % author_id)
 
-        tracks = response['tracks']
-        for t in tracks:
-            duration = t['TrackDuration']
-            total_seconds = duration / 1000
-            minutes = total_seconds / 60
-            seconds = total_seconds - (minutes * 60)
-            t['DurationText'] = '%d:%02d' % (minutes, seconds)
-            t['TrackStatus'] = _get_status_icon('Downloaded' if t['Location'] is not None else '')
+        for a in response['books']:
+            a['StatusText'] = _get_status_icon(a['Status'])
+            a['can_download'] = True if a['Status'] not in ('Downloaded', 'Snatched', 'Wanted') else False
+            a['can_skip'] = True if a['Status'] not in ('Downloaded', 'Snatched', 'Skipped') else False
+            a['can_trynew'] = True if a['Status'] in ('Snatched') else False
 
-        template = htpc.LOOKUP.get_template('lazylibrarian_view_book.html')
+        template = htpc.LOOKUP.get_template('lazylibrarian_view_author.html')
+
         return template.render(
-            scriptname='lazylibrarian_view_book',
-            author_id=response['book'][0]['AuthorID'],
-            book_id=book_id,
-            bookimg=response['book'][0]['ArtworkURL'],
-            module_name=htpc.settings.get('lazylibrarian_name', 'Lazylibrarian'),
-            book=response['book'][0],
-            tracks=response['tracks'],
-            description=response['description'][0]
+            scriptname='lazylibrarian_view_author',
+            author_id=author_id,
+            author=response['author'][0],
+            authorimg=response['author'][0]['AuthorImg'],
+            books=response['books'],
+            #description=response['description'][0],
+            module_name=htpc.settings.get('lazylibrarian_name') or 'Lazylibrarian',
         )
 
     @staticmethod
@@ -160,6 +134,12 @@ class Lazylibrarian(object):
     @require()
     def GetAuthorList(self):
         return self.fetch('getIndex')
+
+    @cherrypy.expose()
+    @cherrypy.tools.json_out()
+    @require()
+    def GetBookList(self):
+        return self.fetch('getAllBooks')
 
     @cherrypy.expose()
     @cherrypy.tools.json_out()
