@@ -26,8 +26,27 @@ $(document).ready(function () {
     });
 
     $('#add_authorid_button').click(function () {
-        addAuthor($('#add_author_select').val(), $('#add_author_book').find('option:selected').val(), $('#add_author_select').find('option:selected').text())
+        var authorname = $('#add_author_select').find(":selected").attr("author");
+        var value      = $('#add_author_select').val();
+        var valuetext  = $('#add_author_select').find('option:selected').text();
+        $(this).attr('disabled', true);
+        $(this).html('<i class="fa fa-spinner fa-spin fa-inverse fa-fw"></i> Please wait...');
 
+        if($('#add_author_book').find('option:selected').val() === 'authorId') {
+            // Add author only
+            addAuthor(authorname, 'authorId', valuetext, function(){
+                $('#add_author_name').val('');
+                cancelAddAuthor();
+            });
+        }else{
+            // Add author then book
+            addAuthor(authorname, 'authorId', valuetext, function(){
+                addAuthor(value, 'bookId', valuetext, function(){
+                    $('#add_author_name').val('');
+                    cancelAddAuthor();
+                });
+            });
+        }
     });
 
     $('#cancel_author_button').click(function () {
@@ -69,7 +88,6 @@ function refreshAuthor(authorId) {
 }
 
 function searchForAuthor(name, type) {
-    console.log("Searching for: " + name + " (" + type + ")");
     $.ajax({
         url: WEBDIR + 'lazylibrarian/SearchForAuthor',
         type: 'get',
@@ -88,7 +106,8 @@ function searchForAuthor(name, type) {
             if (type == 'authorId') {
                 $.each(result, function (index, item) {
                     var option = $('<option>')
-                    .attr('value', item.authorname)
+                    .attr('value', item.authorid)
+                    .attr('author', item.authorname)
                     .html(item.authorname);
 
                     $('#add_author_select').append(option);
@@ -110,6 +129,7 @@ function searchForAuthor(name, type) {
                     }
                     var option = $('<option>')
                         .attr('value', item.bookid)
+                        .attr('author', item.authorname)
                         .html(item.bookname + tt + item.authorname);
 
                     $('#add_author_select').append(option);
@@ -124,7 +144,7 @@ function searchForAuthor(name, type) {
     })
 }
 
-function addAuthor(id, searchtype, name) {
+function addAuthor(id, searchtype, name, callBack) {
     // val can be authorId or bookId
     var stype = (searchtype === 'authorId') ? 'Author' : 'Book';
     $.ajax({
@@ -134,11 +154,15 @@ function addAuthor(id, searchtype, name) {
         type: 'get',
         dataType: 'text',
         success: function (data) {
-            $('#add_author_name').val('');
+            console.log(data);
             notify('Add ' + stype, 'Successfully added  '+ stype + ' ' + name, 'success');
-            cancelAddAuthor();
+            callBack();
         }
     })
+}
+
+function addBook(){
+    //TODO
 }
 
 function cancelAddAuthor() {
@@ -147,6 +171,8 @@ function cancelAddAuthor() {
     $('#add_author_name').fadeIn();
     $('#add_authorid_button').hide();
     $('#add_author_button').show();
+    $('#add_authorid_button').attr('disabled', false);
+    $('#add_authorid_button').html('<i class="fa fa-check fa-inverse fa-fw"></i> Add');
 }
 
 function loadAuthors() {
@@ -301,23 +327,24 @@ function loadWanteds() {
                                     type: 'get',
                                     complete: function (result) {
                                         loadWanteds()
-                                        notify('Skipped', wanted.AuthorName + ' - ' + wanted.BookTitle, 'success');
+                                        notify('Skipped', wanted.AuthorName + ' - ' + wanted.BookName, 'success');
                                     }
                                 })
                             })
-                    var force = $('<a class="btn btn-mini" title="Force search"><i class="fa fa-search"></i></a></td>').click(function () {
-                                $.ajax({
-                                    url: WEBDIR + 'lazylibrarian/QueueBook',
-                                    data: {'bookId': wanted.BookID},
-                                    type: 'get',
-                                    complete: function (result) {
-                                    	loadWanteds()
-                                        notify('Force search for', wanted.AuthorName + ' - ' + wanted.BookTitle, 'success');
-                                    }
-                                })
-                            })
+                    // var force = $('<a class="btn btn-mini" title="Force search"><i class="fa fa-search"></i></a></td>').click(function () {
+                    //             $.ajax({
+                    //                 url: WEBDIR + 'lazylibrarian/QueueBook',
+                    //                 data: {'bookId': wanted.BookID},
+                    //                 type: 'get',
+                    //                 complete: function (result) {
+                    //                 	loadWanteds()
+                    //                     notify('Force search for', wanted.AuthorName + ' - ' + wanted.BookTitle, 'success');
+                    //                 }
+                    //             })
+                    //         })
 
-                    var div = $('<div>').addClass('btn-group').append(force, remove);
+                    //var div = $('<div>').addClass('btn-group').append(force);
+                    var div = $('<div>').addClass('btn-group').append(remove);
                     row.append(
                         $('<td>').append(
                             $('<a>')
@@ -371,13 +398,13 @@ function loadHistory() {
                                 }
                             })
                         })
-		if (item.Status == 'Snatched') {
-		var div = $('<div>').addClass('btn-group').append(retry);
-		} else if (item.Status == 'Unprocessed') {
-		var div = $('<div>').addClass('btn-group').append(retry);
-		} else {
+		// if (item.Status == 'Snatched') {
+		// var div = $('<div>').addClass('btn-group').append(retry);
+		// } else if (item.Status == 'Unprocessed') {
+		// var div = $('<div>').addClass('btn-group').append(retry);
+		// } else {
 		var div = ''
-		}
+		//}
                 row.append(
                     $('<td>').html(item.NZBdate),
                     $('<td>').html(item.NZBtitle),

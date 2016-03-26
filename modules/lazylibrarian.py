@@ -202,7 +202,7 @@ class Lazylibrarian(object):
         if searchtype == "authorId":
             return self.fetch('addAuthor&name=%s' % id.replace (" ", "+"), text=True)
         else:
-            return self.fetch('addBook&id=%s' % id)
+            return self.fetch('queueBook&id=%s' % id, text=True)
 
     @cherrypy.expose()
     @cherrypy.tools.json_out()
@@ -319,12 +319,13 @@ class Lazylibrarian(object):
 
 
 def _get_status_icon(status):
-    green = ["Downloaded", "Active", "Processed"]
+    green = ["Open", "Have", "Downloaded", "Active", "Processed"]
     orange = ["Snatched"]
     blue = ["Wanted"]
     red = ["Unprocessed"]
 
     mapsicon = {
+        'Open': 'fa fa-download',
         'Downloaded': 'fa fa-download',
         'Active': 'fa fa-rotate-right',
         'Error': 'fa fa-bell-o',
@@ -333,6 +334,7 @@ def _get_status_icon(status):
         'Skipped': 'fa fa-fast-forward',
         'Wanted': 'fa fa-heart',
         'Processed': 'fa fa-check',
+        'Have': 'fa fa-check',
         'Unprocessed': 'fa fa-exclamation-circle'
     }
 

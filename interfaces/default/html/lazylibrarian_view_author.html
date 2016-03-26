@@ -64,10 +64,10 @@
                         <th>Action</th>
                     </tr>
                     </thead>
-                    <tbody id="book-tracks">
+                    <tbody id="author-books">
                     % for book in books:
                     <tr data-bookid="${book['BookID']}">
-                        <td class="author"><a target="_blank" href="${book['BookLink']}">
+                        <td class="book"><a target="_blank" href="${book['BookLink']}">
                             ${book['BookName']}
                         </a></td>
                         <td>${book['BookDate']}</td>
@@ -75,20 +75,22 @@
                         <td>
                             <div class="btn-group">
                             % if book['can_download'] is True:
-                            <a class="btn btn-mini search-book-hp" title="Set as wanted and search">
+                            <a class="btn btn-mini search-book-ll" title="Set as wanted and search">
                                 <i class="fa fa-heart fa-fw"></i>
                             </a>
                             % endif
                             % if book['can_skip'] is True:
-                            <a class="btn btn-mini unque-book-hp" title="Set as skipped">
+                            <a class="btn btn-mini unque-book-ll" title="Set as skipped">
                                 <i class="fa fa-step-forward fa-fw"></i>
                             </a>
                             % endif
+                            <!-- 
                             % if book['can_trynew'] is True:
                             <a class="btn btn-mini trynew-book-hp" title="Try new download">
                                 <i class="fa fa-repeat fa-fw"></i>
                             </a>
-                            % endif
+                            % endif 
+                            -->
                             </div>
                         </td>
                     </tr>
