@@ -87,9 +87,8 @@ function searchForAuthor(name, type) {
 
             if (type == 'authorId') {
                 $.each(result, function (index, item) {
-                    console.log(item);
                     var option = $('<option>')
-                    .attr('value', item.authorid)
+                    .attr('value', item.authorname)
                     .html(item.authorname);
 
                     $('#add_author_select').append(option);
@@ -133,7 +132,7 @@ function addAuthor(id, searchtype, name) {
         data: {'id': id,
                'searchtype': searchtype},
         type: 'get',
-        dataType: 'json',
+        dataType: 'text',
         success: function (data) {
             $('#add_author_name').val('');
             notify('Add ' + stype, 'Successfully added  '+ stype + ' ' + name, 'success');

@@ -4,28 +4,28 @@
     totalbooks = 0 if author['TotalBooks'] is None else author['TotalBooks']
 %>
 <div class="container-fluid">
-    <div class="content maincontent headphones_author">
+    <div class="content maincontent lazylibrarian_author">
         <h1 class="page-header page-title" data-authorid="${author_id}" data-authorimg="${authorimg}">
-            <span class="headphones_authorname">${author['AuthorName']}</span>
+            <span class="lazylibrarian_authorname">${author['AuthorName']}</span>
             <div class="btn-group show-options-menu pull-right">
                 <a class="btn dropdown-toggle" data-hover="dropdown" data-toggle="dropdown" href="#">
                     <i class="fa fa-cogs fa-lg"></i>
                     <i class="fa fa-chevron-down fa-fw"></i>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="${self.attr.webdir}headphones/RefreshAuthor/${author_id}" class="ajax-link"><i class="fa fa-refresh fa-fw"></i> Refresh</a></li>
-                    <li><a href="${self.attr.webdir}headphones/DeleteAuthor/${author_id}" class="ajax-link"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+                    <li><a href="${self.attr.webdir}lazylibrarian/RefreshAuthor/${author_id}" class="ajax-link"><i class="fa fa-refresh fa-fw"></i> Refresh</a></li>
+                    <li><a href="${self.attr.webdir}lazylibrarian/DeleteAuthor/${author_id}" class="ajax-link"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
                     <li class="divider"></li>
-                    <li><a href="${self.attr.webdir}headphones/PauseAuthor/${author_id}" class="ajax-link"><i class="fa fa-pause fa-fw"></i> Pause</a></li>
-                    <li><a href="${self.attr.webdir}headphones/ResumeAuthor/${author_id}" class="ajax-link"><i class="fa fa-play fa-fw"></i> Resume</a></li>
+                    <li><a href="${self.attr.webdir}lazylibrarian/PauseAuthor/${author_id}" class="ajax-link"><i class="fa fa-pause fa-fw"></i> Pause</a></li>
+                    <li><a href="${self.attr.webdir}lazylibrarian/ResumeAuthor/${author_id}" class="ajax-link"><i class="fa fa-play fa-fw"></i> Resume</a></li>
                 </ul>
             </div>
         </h1>
 
         <ul class="breadcrumb">
             <li><a href="${self.attr.webdir}">Home</a> <span class="divider">/</span></li>
-            <li><a href="${self.attr.webdir}headphones">${module_name}</a> <span class="divider">/</span></li>
-            <li class="active headphones_showname">${author['AuthorName']}</li>
+            <li><a href="${self.attr.webdir}lazylibrarian">${module_name}</a> <span class="divider">/</span></li>
+            <li class="active lazylibrarian_showname">${author['AuthorName']}</li>
         </ul>
 
         <div id="banner" class="row-fluid banner">
@@ -34,12 +34,12 @@
                 <div id="author_details_top" class="span4"></div>
                 <strong>Author details</strong>
                 <table class="table table-condensed">
-                    <tr><td>Books</td><td class="headphones_total_tracks"> ${havebooks} / ${totalbooks}</td></tr>
-                    <tr><td>Status</td><td class="headphones_status">${author['Status']}</td></tr>
+                    <tr><td>Books</td><td class="lazylibrarian_total_tracks"> ${havebooks} / ${totalbooks}</td></tr>
+                    <tr><td>Status</td><td class="lazylibrarian_status">${author['Status']}</td></tr>
                     %if author['LastBook'] is not None:
                         <tr>
                             <td>Last Book</td>
-                            <td class="headphones_last_book"><a href="${self.attr.webdir}lazylibrarian/viewBook/${author['LastBook']}">${author['LastBook']} (${author['LastDate']})</a></td>
+                            <td class="lazylibrarian_last_book"><a href="${self.attr.webdir}lazylibrarian/viewBook/${author['LastBook']}">${author['LastBook']} (${author['LastDate']})</a></td>
                         </tr>
                     %else:
                         <tr>
@@ -59,7 +59,6 @@
                     <thead>
                     <tr>
                         <th>Title</th>
-                        <th>Type</th>
                         <th>Release Date</th>
                         <th>Status</th>
                         <th>Action</th>
@@ -68,10 +67,9 @@
                     <tbody id="book-tracks">
                     % for book in books:
                     <tr data-bookid="${book['BookID']}">
-                        <td class="author"><a href="${self.attr.webdir}headphones/viewBook/${book['BookID']}">
+                        <td class="author"><a target="_blank" href="${book['BookLink']}">
                             ${book['BookName']}
                         </a></td>
-                        <td></td>
                         <td>${book['BookDate']}</td>
                         <td>${book['StatusText']}</td>
                         <td>

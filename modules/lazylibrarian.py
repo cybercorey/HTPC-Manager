@@ -85,7 +85,6 @@ class Lazylibrarian(object):
             author=response['author'][0],
             authorimg=response['author'][0]['AuthorImg'],
             books=response['books'],
-            #description=response['description'][0],
             module_name=htpc.settings.get('lazylibrarian_name') or 'Lazylibrarian',
         )
 
@@ -196,11 +195,12 @@ class Lazylibrarian(object):
         return self.fetch('unqueueBook&id=%s' % bookId, text=True)
 
     @cherrypy.expose()
-    @cherrypy.tools.json_out()
+    #@cherrypy.tools.json_out()
     @require()
     def AddAuthor(self, id, searchtype, **kwargs):
+
         if searchtype == "authorId":
-            return self.fetch('addAuthor&name=%s' % id)
+            return self.fetch('addAuthor&name=%s' % id.replace (" ", "+"), text=True)
         else:
             return self.fetch('addBook&id=%s' % id)
 
