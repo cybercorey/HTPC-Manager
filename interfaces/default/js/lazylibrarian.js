@@ -22,7 +22,6 @@ $(document).ready(function () {
     $('#add_author_button').click(function () {
         searchAction();
         $(this).attr('disabled', true);
-        //searchForAuthor($('#add_author_name').val(), $('#add_author_book').find('option:selected').val());
     });
 
     $('#add_authorid_button').click(function () {
@@ -154,7 +153,6 @@ function addAuthor(id, searchtype, name, callBack) {
         type: 'get',
         dataType: 'text',
         success: function (data) {
-            console.log(data);
             notify('Add ' + stype, 'Successfully added  '+ stype + ' ' + name, 'success');
             callBack();
         }
@@ -321,29 +319,16 @@ function loadWanteds() {
                     }
 
                     var remove = $('<a class="btn btn-mini btn-cancel" title="Set skipped"><i class="fa fa-step-forward"></i></a></td>').click(function () {
-                                $.ajax({
-                                    url: WEBDIR + 'lazylibrarian/UnqueueBook',
-                                    data: {'bookId': wanted.BookID},
-                                    type: 'get',
-                                    complete: function (result) {
-                                        loadWanteds()
-                                        notify('Skipped', wanted.AuthorName + ' - ' + wanted.BookName, 'success');
-                                    }
-                                })
-                            })
-                    // var force = $('<a class="btn btn-mini" title="Force search"><i class="fa fa-search"></i></a></td>').click(function () {
-                    //             $.ajax({
-                    //                 url: WEBDIR + 'lazylibrarian/QueueBook',
-                    //                 data: {'bookId': wanted.BookID},
-                    //                 type: 'get',
-                    //                 complete: function (result) {
-                    //                 	loadWanteds()
-                    //                     notify('Force search for', wanted.AuthorName + ' - ' + wanted.BookTitle, 'success');
-                    //                 }
-                    //             })
-                    //         })
-
-                    //var div = $('<div>').addClass('btn-group').append(force);
+                        $.ajax({
+                            url: WEBDIR + 'lazylibrarian/UnqueueBook',
+                            data: {'bookId': wanted.BookID},
+                            type: 'get',
+                            complete: function (result) {
+                                loadWanteds()
+                                notify('Skipped', wanted.AuthorName + ' - ' + wanted.BookName, 'success');
+                            }
+                        })
+                    })
                     var div = $('<div>').addClass('btn-group').append(remove);
                     row.append(
                         $('<td>').append(
@@ -386,25 +371,19 @@ function loadHistory() {
             $.each(result, function(i, item) {
                 var row = $('<tr>');
                 var retry = $('<a class="btn btn-mini" title="Try new download, if available"><i class="fa fa-repeat"></i></a></td>').click(function () {
-                            $.ajax({
-                                url: WEBDIR + 'lazylibrarian/QueueBook',
-                                data: {
-				'bookID': item.BookID,
-				'new': 'True'
-				},
-                                type: 'get',
-                                complete: function (result) {
-                                    notify('Try new download, if available', 'success');
-                                }
-                            })
-                        })
-		// if (item.Status == 'Snatched') {
-		// var div = $('<div>').addClass('btn-group').append(retry);
-		// } else if (item.Status == 'Unprocessed') {
-		// var div = $('<div>').addClass('btn-group').append(retry);
-		// } else {
-		var div = ''
-		//}
+                    $.ajax({
+                        url: WEBDIR + 'lazylibrarian/QueueBook',
+                        data: {
+        				    'bookID': item.BookID,
+        				    'new': 'True'
+        				},
+                        type: 'get',
+                        complete: function (result) {
+                            notify('Try new download, if available', 'success');
+                        }
+                    })
+                })
+		        var div = ''
                 row.append(
                     $('<td>').html(item.NZBdate),
                     $('<td>').html(item.NZBtitle),
